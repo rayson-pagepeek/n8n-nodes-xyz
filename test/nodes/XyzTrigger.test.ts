@@ -1,13 +1,13 @@
 import { IWebhookFunctions } from 'n8n-workflow';
-import { OnMessageEdit } from '../../nodes/OnMessageEdit/OnMessageEdit.node';
+import { XyzTrigger } from '../../nodes/Xyz/XyzTrigger.node';
 import { BotEvent } from '../../nodes/types';
 
-describe('OnMessageEdit Node', () => {
-	let node: OnMessageEdit;
+describe('XyzTrigger Node', () => {
+	let node: XyzTrigger;
 	let mockWebhookFunctions: Partial<IWebhookFunctions>;
 
 	beforeEach(() => {
-		node = new OnMessageEdit();
+		node = new XyzTrigger();
 		mockWebhookFunctions = {
 			getBodyData: jest.fn(),
 			getResponseObject: jest.fn().mockReturnValue({
@@ -16,7 +16,7 @@ describe('OnMessageEdit Node', () => {
 			}),
 			getNode: jest.fn().mockReturnValue({}),
 			helpers: {
-				returnJsonArray: jest.fn((data) => {
+				returnJsonArray: jest.fn((data: unknown) => {
 					const items = Array.isArray(data) ? data : [data];
 					return items.map((item) => ({ json: item }));
 				}),
@@ -26,17 +26,13 @@ describe('OnMessageEdit Node', () => {
 	});
 
 	it('should have correct description', () => {
-		expect(node.description.name).toBe('onMessageEdit');
-		expect(node.description.displayName).toBe('On Message Edit');
+		expect(node.description.name).toBe('xyzTrigger');
+		expect(node.description.displayName).toBe('XYZ Trigger');
 		expect(node.description.group).toEqual(['trigger']);
-	});
-
-	it('should have webhook configuration', () => {
 		expect(node.description.webhooks).toBeDefined();
 		expect(node.description.webhooks?.length).toBe(1);
 		expect(node.description.webhooks?.[0].httpMethod).toBe('POST');
-		expect(node.description.webhooks?.[0].path).toBe('message-edit');
-		expect(node.description.webhooks?.[0].responseMode).toBe('onReceived');
+		expect(node.description.webhooks?.[0].path).toBe('={{$parameter["triggerType"]}}');
 	});
 
 	it('should process valid BotEvent and respond immediately', async () => {
@@ -49,6 +45,10 @@ describe('OnMessageEdit Node', () => {
 			bot_name: 'test-bot',
 			access_token: 'test-access-token',
 			response_mode: 'async',
+			content: {
+				msg_type: 'm.text',
+				body: 'hello',
+			},
 		};
 
 		mockWebhookFunctions.getBodyData = jest.fn().mockReturnValue(botEvent);
@@ -59,15 +59,44 @@ describe('OnMessageEdit Node', () => {
 		expect(mockWebhookFunctions.getResponseObject).toHaveBeenCalled();
 		expect(result.workflowData).toBeDefined();
 		expect(result.noWebhookResponse).toBe(true);
-		expect(mockWebhookFunctions.helpers?.returnJsonArray).toHaveBeenCalled();
+		expect(mockWebhookFunctions.helpers?.returnJsonArray).toHaveBeenCalledWith({
+			chatInput: 'hello',
+			...botEvent,
+		});
 	});
 
-	it('should throw error for invalid BotEvent', async () => {
-		mockWebhookFunctions.getBodyData = jest.fn().mockReturnValue({});
+	it('should derive chatInput from message field when content.body is missing', async () => {
+		const payload = {
+			event_id: 'test-event-id',
+			room_id: 'test-room-id',
+			type: 'm.room.message',
+			sender: 'test-sender',
+			origin_server_ts: 1234567890,
+			bot_name: 'test-bot',
+			access_token: 'test-access-token',
+			response_mode: 'async',
+			message: 'fallback message',
+		} as unknown as BotEvent;
+
+		mockWebhookFunctions.getBodyData = jest.fn().mockReturnValue(payload);
+
+		await node.webhook.call(mockWebhookFunctions as IWebhookFunctions);
+
+		expect(mockWebhookFunctions.helpers?.returnJsonArray).toHaveBeenCalledWith({
+			chatInput: 'fallback message',
+			...payload,
+		});
+	});
+
+	it('should throw error for invalid BotEvent (missing event_id and room_id)', async () => {
+		mockWebhookFunctions.getBodyData = jest
+			.fn()
+			.mockReturnValue({} as unknown as BotEvent);
 
 		await expect(
 			node.webhook.call(mockWebhookFunctions as IWebhookFunctions),
 		).rejects.toThrow('Invalid BotEvent: event_id and room_id are required');
 	});
 });
+
 

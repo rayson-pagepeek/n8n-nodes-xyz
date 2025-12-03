@@ -29,18 +29,15 @@
     "files": [
         "dist"
     ],
-    "n8n": {
+        "n8n": {
         "n8nNodesApiVersion": 1,
         "strict": true,
         "credentials": [
             "dist/credentials/ChatbotApi.credentials.js"
         ],
         "nodes": [
-            "dist/nodes/OnMessage/OnMessage.node.js",
-            "dist/nodes/OnMessageEdit/OnMessageEdit.node.js",
-            "dist/nodes/ReadMessage/ReadMessage.node.js",
-            "dist/nodes/SendTextMessage/SendTextMessage.node.js",
-            "dist/nodes/SendMediaMessage/SendMediaMessage.node.js"
+            "dist/nodes/Xyz/Xyz.node.js",
+            "dist/nodes/Xyz/XyzTrigger.node.js"
         ]
     },
     "devDependencies": {

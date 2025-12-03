@@ -1,9 +1,9 @@
 import {
-    IAuthenticateGeneric,
-    ICredentialTestRequest,
-    ICredentialType,
-    INodeProperties,
-    Icon,
+	IAuthenticateGeneric,
+	ICredentialTestRequest,
+	ICredentialType,
+	INodeProperties,
+	Icon,
 } from 'n8n-workflow';
 
 export class ChatbotApi implements ICredentialType {
@@ -16,7 +16,7 @@ export class ChatbotApi implements ICredentialType {
 			displayName: 'Host',
 			name: 'host',
 			type: 'string',
-			default: '',
+			default: 'https://topsecret.network',
 			required: true,
 			description: 'The host URL of the chatbot API',
 		},
