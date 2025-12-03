@@ -82,10 +82,20 @@ export class XyzTrigger implements INodeType {
 			...bodyData,
 		});
 
-		// streaming 模式：不立即响应，等待流式响应
-		// 在 streaming 模式下，响应会在后续节点中通过 httpResponse 处理
+		if (bodyData.response_mode === 'sse') {
+			// streaming 模式：不立即响应，等待流式响应
+			// 在 streaming 模式下，响应会在后续节点中通过 httpResponse 处理
+			return {
+				workflowData: [returnData],
+			};
+		}
+
+		const response = this.getResponseObject();
+		response.status(200);
+
 		return {
 			workflowData: [returnData],
+			noWebhookResponse: true,
 		};
 	}
 }
