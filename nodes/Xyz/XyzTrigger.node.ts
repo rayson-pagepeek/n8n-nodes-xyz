@@ -23,7 +23,7 @@ function getWebhookResponseMode(responseMode?: string): WebhookResponseMode {
 	}
 
 	const mode = responseMode.toLowerCase();
-	if (mode === 'streaming' || mode.includes('stream')) {
+	if (mode === 'streaming' || mode === 'sse' || mode.includes('stream')) {
 		return 'streaming';
 	}
 
@@ -120,7 +120,7 @@ export class XyzTrigger implements INodeType {
 		} else {
 			// hostedChat 模式或其他模式：立即响应
 			const response = this.getResponseObject();
-			response.status(200).json({ success: true });
+			response.status(200);
 
 			return {
 				workflowData: [returnData],
