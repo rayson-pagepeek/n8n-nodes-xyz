@@ -26,6 +26,13 @@ export class Xyz implements INodeType {
 				required: true,
 			},
 		],
+		usableAsTool: {
+			replacements: {
+				displayName: 'XYZ',
+				name: 'xyz',
+				icon: 'file:icon.svg',
+			},
+		},
 		properties: [
 			{
 				displayName: 'Operation',

@@ -73,7 +73,13 @@ export class XyzTrigger implements INodeType {
 				default: 'message',
 			},
 		],
-		usableAsTool: true,
+		usableAsTool: {
+			replacements: {
+				displayName: 'XYZ Trigger',
+				name: 'xyzTrigger',
+				icon: 'file:icon.svg',
+			},
+		},
 	};
 
 	async webhook(this: IWebhookFunctions): Promise<IWebhookResponseData> {
