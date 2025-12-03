@@ -47,8 +47,13 @@ export class SendMediaMessageAction implements XyzAction {
 			body: dataBuffer,
 		});
 
+		// 合并输入数据和响应数据
+		const inputData = items[itemIndex].json || {};
 		returnData.push({
-			json: responseData,
+			json: {
+				...inputData,
+				response: responseData,
+			},
 			pairedItem: { item: itemIndex },
 		});
 	}
