@@ -5,7 +5,7 @@ import {
 	INodeTypeDescription,
 	NodeOperationError,
 } from 'n8n-workflow';
-import type { MessageContent } from '../types';
+import { XYZ_ACTIONS } from './actions';
 
 export class Xyz implements INodeType {
 	description: INodeTypeDescription = {
@@ -172,7 +172,6 @@ export class Xyz implements INodeType {
 				},
 			},
 		],
-		usableAsTool: true,
 	};
 
 	// Action handler
@@ -208,17 +207,19 @@ export class Xyz implements INodeType {
 					accessToken = credentials.accessToken as string;
 				}
 
-				if (operation === 'readMessage') {
-					await handleReadMessage(this, items, i, returnData, host, accessToken);
-				} else if (operation === 'sendTextMessage') {
-					await handleSendTextMessage(this, items, i, returnData, host, accessToken);
-				} else if (operation === 'sendMediaMessage') {
-					await handleSendMediaMessage(this, items, i, returnData, host, accessToken);
-				} else {
-					throw new NodeOperationError(this.getNode(), `Unknown operation: ${operation}`, {
-						itemIndex: i,
-					});
+				const action = XYZ_ACTIONS[operation];
+
+				if (!action) {
+					throw new NodeOperationError(
+						this.getNode(),
+						`Unknown operation: ${operation}`,
+						{
+							itemIndex: i,
+						},
+					);
 				}
+
+				await action.execute(this, items, i, returnData, host, accessToken);
 			} catch (error) {
 				if (this.continueOnFail()) {
 					returnData.push({
@@ -234,140 +235,3 @@ export class Xyz implements INodeType {
 		return [returnData];
 	}
 }
-
-async function handleReadMessage(
-	ctx: IExecuteFunctions,
-	items: INodeExecutionData[],
-	itemIndex: number,
-	returnData: INodeExecutionData[],
-	host: string,
-	accessToken: string,
-): Promise<void> {
-	const roomId = ctx.getNodeParameter('roomId', itemIndex) as string;
-	const eventId = ctx.getNodeParameter('eventId', itemIndex) as string;
-
-	// Build URL
-	let url = `${host}/chatbot/v1/message/${roomId}`;
-	if (eventId) {
-		url += `?event_id=${eventId}`;
-	}
-
-	// Make request
-	const responseData = await ctx.helpers.httpRequest({
-		method: 'GET',
-		url,
-		headers: {
-			Authorization: `Bearer ${accessToken}`,
-		},
-	});
-
-	returnData.push({
-		json: responseData,
-		pairedItem: { item: itemIndex },
-	});
-}
-
-async function handleSendTextMessage(
-	ctx: IExecuteFunctions,
-	items: INodeExecutionData[],
-	itemIndex: number,
-	returnData: INodeExecutionData[],
-	host: string,
-	accessToken: string,
-): Promise<void> {
-	const roomId = ctx.getNodeParameter('roomId', itemIndex) as string;
-	const body = ctx.getNodeParameter('body', itemIndex) as string;
-	const formattedBody = ctx.getNodeParameter('formattedBody', itemIndex) as string;
-	const format = ctx.getNodeParameter('format', itemIndex) as string;
-	const mentionsStr = ctx.getNodeParameter('mentions', itemIndex) as string;
-	const replyToEventId = ctx.getNodeParameter('replyToEventId', itemIndex) as string;
-
-	// Build message content
-	const messageContent: MessageContent = {
-		msg_type: 'm.text',
-		body,
-	};
-
-	if (formattedBody) {
-		messageContent.formatted_body = formattedBody;
-	}
-
-	if (format) {
-		messageContent.format = format;
-	}
-
-	if (mentionsStr) {
-		messageContent.mentions = mentionsStr
-			.split(',')
-			.map((m) => m.trim())
-			.filter((m) => m.length > 0);
-	}
-
-	if (replyToEventId) {
-		messageContent.reply_to = {
-			event_id: replyToEventId,
-		};
-	}
-
-	// Make request
-	const responseData = await ctx.helpers.httpRequest({
-		method: 'POST',
-		url: `${host}/chatbot/v1/send/${roomId}`,
-		headers: {
-			Authorization: `Bearer ${accessToken}`,
-			'Content-Type': 'application/json',
-		},
-		body: messageContent,
-		json: true,
-	});
-
-	returnData.push({
-		json: responseData,
-		pairedItem: { item: itemIndex },
-	});
-}
-
-async function handleSendMediaMessage(
-	ctx: IExecuteFunctions,
-	items: INodeExecutionData[],
-	itemIndex: number,
-	returnData: INodeExecutionData[],
-	host: string,
-	accessToken: string,
-): Promise<void> {
-	const roomId = ctx.getNodeParameter('roomId', itemIndex) as string;
-	const binaryPropertyName = ctx.getNodeParameter('binaryPropertyName', itemIndex) as string;
-
-	// Get binary data
-	const binaryData = ctx.helpers.assertBinaryData(itemIndex, binaryPropertyName);
-	if (!binaryData) {
-		throw new NodeOperationError(
-			ctx.getNode(),
-			`Binary property "${binaryPropertyName}" not found`,
-			{ itemIndex },
-		);
-	}
-	const dataBuffer = await ctx.helpers.getBinaryDataBuffer(itemIndex, binaryPropertyName);
-
-	// Get content type and length
-	const contentType = binaryData.mimeType || 'application/octet-stream';
-	const contentLength = dataBuffer.length.toString();
-
-	// Make request
-	const responseData = await ctx.helpers.httpRequest({
-		method: 'POST',
-		url: `${host}/chatbot/v1/upload/${roomId}`,
-		headers: {
-			Authorization: `Bearer ${accessToken}`,
-			'Content-Type': contentType,
-			'Content-Length': contentLength,
-		},
-		body: dataBuffer,
-	});
-
-	returnData.push({
-		json: responseData,
-		pairedItem: { item: itemIndex },
-	});
-}
-
