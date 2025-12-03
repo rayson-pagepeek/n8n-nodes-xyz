@@ -13,7 +13,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/xurh/n8n-nodes-xyz.git"
+        "url": "https://github.com/rayson-pagepeek/n8n-nodes-xyz"
     },
     "scripts": {
         "build": "n8n-node build",
