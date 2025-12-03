@@ -35,16 +35,19 @@ export class Xyz implements INodeType {
 				options: [
 					{
 						name: 'Read Message',
+						action: 'Read a message from the chatbot API',
 						value: 'readMessage',
 						description: 'Read a message from the chatbot API',
 					},
 					{
 						name: 'Send Media Message',
+						action: 'Send a media file to the chatbot API',
 						value: 'sendMediaMessage',
 						description: 'Send a media/binary file to the chatbot API',
 					},
 					{
 						name: 'Send Text Message',
+						action: 'Send a text message to the chatbot API',
 						value: 'sendTextMessage',
 						description: 'Send a text message to the chatbot API',
 					},
