@@ -72,11 +72,15 @@ export class XyzTrigger implements INodeType {
 		}
 
 		// 默认将文本内容映射到 chatInput，方便直接接 AI 节点
-		const chatInput =
+		const message =
 			bodyData.content?.body ??
 			(bodyData as unknown as { message?: string }).message ??
 			'';
-
+	
+		// 检查message中是否包含botName,如果包含,则将botName替换为空字符串
+		const botName = bodyData.bot_name;
+		const chatInput = message.replace(`${botName}:`, '');
+		
 		const returnData = this.helpers.returnJsonArray({
 			chatInput,
 			...bodyData,
