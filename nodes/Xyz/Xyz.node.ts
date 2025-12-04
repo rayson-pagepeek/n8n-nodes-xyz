@@ -75,18 +75,6 @@ export class Xyz implements INodeType {
 					},
 				},
 			},
-			{
-				displayName: 'Use Previous Access Token',
-				name: 'usePreviousAccessToken',
-				type: 'boolean',
-				default: false,
-				description: 'Whether to use access_token from previous node (OnMessage/OnMessageEdit)',
-				displayOptions: {
-					show: {
-						operation: ['readMessage', 'sendTextMessage', 'sendMediaMessage'],
-					},
-				},
-			},
 
 			// Read message specific
 			{
@@ -195,24 +183,12 @@ export class Xyz implements INodeType {
 
 		for (let i = 0; i < items.length; i++) {
 			try {
-				// 获取凭证或前一个节点的 access token
-				const usePreviousAccessToken = this.getNodeParameter(
-					'usePreviousAccessToken',
-					i,
-				) as boolean;
-
 				let accessToken: string;
 				let host: string;
 
-				if (usePreviousAccessToken && items[i].json.access_token) {
-					accessToken = items[i].json.access_token as string;
-					const credentials = await this.getCredentials('chatbotApi');
-					host = credentials.host as string;
-				} else {
-					const credentials = await this.getCredentials('chatbotApi');
-					host = credentials.host as string;
-					accessToken = credentials.accessToken as string;
-				}
+				const credentials = await this.getCredentials('chatbotApi');
+				host = credentials.host as string;
+				accessToken = credentials.accessToken as string;
 
 				const action = XYZ_ACTIONS[operation];
 
