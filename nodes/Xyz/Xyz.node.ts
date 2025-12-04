@@ -183,12 +183,9 @@ export class Xyz implements INodeType {
 
 		for (let i = 0; i < items.length; i++) {
 			try {
-				let accessToken: string;
-				let host: string;
-
 				const credentials = await this.getCredentials('chatbotApi');
-				host = credentials.host as string;
-				accessToken = credentials.accessToken as string;
+				const host = credentials.host as string;
+				const accessToken = credentials.accessToken as string;
 
 				const action = XYZ_ACTIONS[operation];
 
