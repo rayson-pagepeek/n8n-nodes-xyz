@@ -71,6 +71,17 @@ export class XyzTrigger implements INodeType {
 			);
 		}
 
+		// 如果不是消息事件，则直接返回
+		if (bodyData.type !== 'm.room.message') {
+			// 跳过此消息，返回空的工作流数据
+			const response = this.getResponseObject();
+			response.status(200);
+			return {
+				workflowData: [],
+				noWebhookResponse: true,
+			};
+		}
+
 		// 默认将文本内容映射到 chatInput，方便直接接 AI 节点
 		const message =
 			bodyData.content?.body ??
