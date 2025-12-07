@@ -3,6 +3,13 @@ import type { MessageContent } from '../../types';
 import type { XyzAction } from './types';
 
 export class SendTextMessageAction implements XyzAction {
+	name = 'sendTextMessage';
+	resource = 'Message Actions';
+	displayName = 'Send Text Message';
+	description = 'Send a text message to the chatbot API';
+	params = ['room_id', 'body', 'formatted_body', 'format', 'mentions', 'reply_to_event_id'] as const;
+	requiredParams = ['room_id', 'body'] as const;
+
 	async execute(
 		ctx: IExecuteFunctions,
 		items: INodeExecutionData[],

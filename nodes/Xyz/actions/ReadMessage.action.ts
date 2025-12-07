@@ -2,6 +2,13 @@ import type { IExecuteFunctions, INodeExecutionData } from 'n8n-workflow';
 import type { XyzAction } from './types';
 
 export class ReadMessageAction implements XyzAction {
+	name = 'readMessage';
+	resource = 'Message Actions';
+	displayName = 'Read Message';
+	description = 'Read a message from the chatbot API';
+	params = ['room_id', 'event_id'] as const;
+	requiredParams = ['room_id'] as const;
+
 	async execute(
 		ctx: IExecuteFunctions,
 		items: INodeExecutionData[],

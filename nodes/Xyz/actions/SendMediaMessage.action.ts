@@ -6,6 +6,13 @@ import {
 import type { XyzAction } from './types';
 
 export class SendMediaMessageAction implements XyzAction {
+	name = 'sendMediaMessage';
+	resource = 'File Actions';
+	displayName = 'Send Media Message';
+	description = 'Send a media/binary file to the chatbot API';
+	params = ['room_id', 'binary_property_name'] as const;
+	requiredParams = ['room_id', 'binary_property_name'] as const;
+
 	async execute(
 		ctx: IExecuteFunctions,
 		items: INodeExecutionData[],
