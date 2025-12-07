@@ -1,0 +1,1547 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "title": "Topsecret Chatbot API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "topsecret.network/",
+    "basePath": "/",
+    "paths": {
+        "/chatbot/v1/bots": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取当前用户创建的所有机器人列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "client"
+                ],
+                "summary": "获取所有机器人列表",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/api.Bot"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "创建一个新的机器人账户",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "client"
+                ],
+                "summary": "创建机器人",
+                "parameters": [
+                    {
+                        "description": "创建机器人请求",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.CreateBotRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.CreateBotResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/chatbot/v1/bots/{bot}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "根据机器人名称查找机器人信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "client"
+                ],
+                "summary": "查找机器人",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "机器人名称",
+                        "name": "bot",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.FindBotResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "更新指定机器人的配置信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "client"
+                ],
+                "summary": "更新机器人配置",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "机器人名称",
+                        "name": "bot",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "更新配置请求",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.UpdateBotRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.UpdateBotResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/chatbot/v1/bots/{bot}/access_token": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取指定机器人的访问令牌",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "client"
+                ],
+                "summary": "获取机器人访问令牌",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "机器人名称",
+                        "name": "bot",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.GetBotAccessTokenResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/chatbot/v1/bots/{bot}/invited_rooms": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取指定机器人被邀请但尚未加入的房间列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "agent"
+                ],
+                "summary": "查找机器人被邀请的房间",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "机器人名称",
+                        "name": "bot",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/api.Room"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/chatbot/v1/bots/{bot}/join": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "让指定机器人加入指定的房间",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "agent"
+                ],
+                "summary": "机器人加入房间",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "机器人名称",
+                        "name": "bot",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "加入房间请求",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.BotJoinRoomRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.BotJoinRoomResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/chatbot/v1/bots/{bot}/joined_rooms": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取指定机器人已加入的所有房间列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "agent"
+                ],
+                "summary": "查找机器人已加入的房间",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "机器人名称",
+                        "name": "bot",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/api.Room"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/chatbot/v1/bots/{bot}/leave": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "让指定机器人离开指定的房间",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "agent"
+                ],
+                "summary": "机器人离开房间",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "机器人名称",
+                        "name": "bot",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "离开房间请求",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.BotLeaveRoomRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.BotLeaveRoomResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/chatbot/v1/media/{room_id}/{event_id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "下载指定房间中的媒体文件，支持流式传输。必须提供 room_id 和 event_id 两个参数",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "agent"
+                ],
+                "summary": "下载媒体文件",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "房间ID",
+                        "name": "room_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "事件ID",
+                        "name": "event_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "媒体文件内容",
+                        "schema": {
+                            "type": "file"
+                        }
+                    }
+                }
+            }
+        },
+        "/chatbot/v1/messages/{room_id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "同步读取消息，支持分页和筛选。可以通过query参数或body传递筛选条件",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "agent"
+                ],
+                "summary": "读取消息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "事件ID筛选",
+                        "name": "event_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "事件ID列表筛选",
+                        "name": "event_ids",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "返回数量限制(默认50，最大100)",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.SyncMessageResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "在指定房间中发送消息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "agent"
+                ],
+                "summary": "发送消息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "房间ID",
+                        "name": "room_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "发送消息请求",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.SendMessageRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.SendMessageResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/chatbot/v1/messages/{room_id}/{event_id}": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "编辑指定房间中的消息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "agent"
+                ],
+                "summary": "编辑消息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "房间ID",
+                        "name": "room_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "要编辑的事件ID",
+                        "name": "event_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "编辑消息请求",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.EditMessageRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.EditMessageResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "删除指定房间中的消息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "agent"
+                ],
+                "summary": "删除（redact）消息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "房间ID",
+                        "name": "room_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "要删除的事件ID",
+                        "name": "event_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "删除消息请求",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.RedactMessageRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.RedactMessageResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/chatbot/v1/rooms/{room_id}/info": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取指定房间的详细信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "agent"
+                ],
+                "summary": "获取房间信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "房间ID",
+                        "name": "room_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.GetRoomInfoResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/chatbot/v1/rooms/{room_id}/members": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "获取指定房间的成员列表，支持按成员状态筛选和分页",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "agent"
+                ],
+                "summary": "获取房间成员列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "房间ID",
+                        "name": "room_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "筛选成员状态(join/leave/invite/ban/knock)",
+                        "name": "membership",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "返回数量限制(默认100，最大1000)",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "分页token",
+                        "name": "since",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.GetRoomMembersResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/chatbot/v1/stream/{stream_id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "通过Server-Sent Events (SSE)实时接收流式消息更新",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "text/event-stream"
+                ],
+                "tags": [
+                    "client"
+                ],
+                "summary": "SSE流式订阅",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "流ID",
+                        "name": "stream_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "SSE事件流",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/chatbot/v1/upload/{room_id}": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "在指定房间中上传媒体文件(图片、视频、音频、文件等)",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "agent"
+                ],
+                "summary": "上传媒体文件",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "房间ID",
+                        "name": "room_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "媒体文件",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "文件MIME类型",
+                        "name": "Content-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "文件大小(字节)",
+                        "name": "Content-Length",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回event_id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "api.Bot": {
+            "type": "object",
+            "properties": {
+                "account_type": {
+                    "description": "账户类型",
+                    "type": "integer",
+                    "example": 1
+                },
+                "config": {
+                    "description": "机器人配置",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/api.BotConfig"
+                        }
+                    ]
+                },
+                "localpart": {
+                    "description": "机器人本地部分（用户名）",
+                    "type": "string",
+                    "example": "bot1"
+                },
+                "server_name": {
+                    "description": "服务器名称",
+                    "type": "string",
+                    "example": "example.com"
+                }
+            }
+        },
+        "api.BotConfig": {
+            "type": "object",
+            "properties": {
+                "avatar_url": {
+                    "description": "头像URL（可选）",
+                    "type": "string"
+                },
+                "bot_name": {
+                    "description": "机器人名称",
+                    "type": "string"
+                },
+                "config": {
+                    "description": "配置信息(JSON对象)",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/api.BotSettings"
+                        }
+                    ]
+                },
+                "description": {
+                    "description": "描述（可选）",
+                    "type": "string"
+                },
+                "display_name": {
+                    "description": "显示名称（可选）",
+                    "type": "string"
+                },
+                "event_types": {
+                    "description": "事件类型列表（可选）",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "webhook_url": {
+                    "description": "Webhook URL（可选）",
+                    "type": "string"
+                }
+            }
+        },
+        "api.BotJoinRoomRequest": {
+            "type": "object",
+            "properties": {
+                "room_name": {
+                    "description": "房间名称或ID",
+                    "type": "string",
+                    "example": "!room123:example.com"
+                }
+            }
+        },
+        "api.BotJoinRoomResponse": {
+            "type": "object"
+        },
+        "api.BotLeaveRoomRequest": {
+            "type": "object",
+            "properties": {
+                "room_name": {
+                    "description": "房间名称或ID",
+                    "type": "string",
+                    "example": "!room123:example.com"
+                }
+            }
+        },
+        "api.BotLeaveRoomResponse": {
+            "type": "object"
+        },
+        "api.BotSettings": {
+            "type": "object",
+            "properties": {
+                "auto_join": {
+                    "description": "是否允许自动加入房间，默认为false",
+                    "type": "boolean",
+                    "default": false,
+                    "example": false
+                },
+                "response_mode": {
+                    "description": "agent响应模式：json或sse",
+                    "type": "string",
+                    "enum": [
+                        "json",
+                        "sse"
+                    ],
+                    "example": "json"
+                }
+            }
+        },
+        "api.CreateBotRequest": {
+            "type": "object",
+            "properties": {
+                "avatar_url": {
+                    "description": "头像URL（可选）",
+                    "type": "string",
+                    "example": "mxc://example.com/avatar"
+                },
+                "bot_name": {
+                    "description": "机器人名称（必填）",
+                    "type": "string",
+                    "example": "mybot"
+                },
+                "config": {
+                    "description": "机器人配置（可选）",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/api.BotSettings"
+                        }
+                    ]
+                },
+                "description": {
+                    "description": "描述（可选）",
+                    "type": "string",
+                    "example": "A helpful bot"
+                },
+                "display_name": {
+                    "description": "显示名称（可选）",
+                    "type": "string",
+                    "example": "My Bot"
+                },
+                "event_types": {
+                    "description": "事件类型列表（可选）",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "[\"m.room.message\"]"
+                    ]
+                },
+                "webhook_url": {
+                    "description": "Webhook URL（可选）",
+                    "type": "string",
+                    "example": "https://example.com/webhook"
+                }
+            }
+        },
+        "api.CreateBotResponse": {
+            "type": "object",
+            "properties": {
+                "account_type": {
+                    "description": "账户类型",
+                    "type": "integer",
+                    "example": 1
+                },
+                "config": {
+                    "description": "机器人配置",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/api.BotConfig"
+                        }
+                    ]
+                },
+                "localpart": {
+                    "description": "机器人本地部分（用户名）",
+                    "type": "string",
+                    "example": "bot1"
+                },
+                "server_name": {
+                    "description": "服务器名称",
+                    "type": "string",
+                    "example": "example.com"
+                },
+                "token": {
+                    "description": "访问令牌",
+                    "type": "string",
+                    "example": "syt_xxx"
+                }
+            }
+        },
+        "api.EditMessageRequest": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "新的消息内容",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/api.MessageContent"
+                        }
+                    ]
+                },
+                "event_id": {
+                    "description": "要编辑的 event ID",
+                    "type": "string",
+                    "example": "$abc123"
+                }
+            }
+        },
+        "api.EditMessageResponse": {
+            "type": "object",
+            "properties": {
+                "event_id": {
+                    "description": "新创建的编辑事件 ID",
+                    "type": "string",
+                    "example": "$def456"
+                },
+                "room_id": {
+                    "description": "房间 ID",
+                    "type": "string",
+                    "example": "!room123:example.com"
+                }
+            }
+        },
+        "api.FindBotResponse": {
+            "type": "object",
+            "properties": {
+                "account_type": {
+                    "description": "账户类型",
+                    "type": "integer",
+                    "example": 1
+                },
+                "config": {
+                    "description": "机器人配置",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/api.BotConfig"
+                        }
+                    ]
+                },
+                "localpart": {
+                    "description": "机器人本地部分（用户名）",
+                    "type": "string",
+                    "example": "bot1"
+                },
+                "server_name": {
+                    "description": "服务器名称",
+                    "type": "string",
+                    "example": "example.com"
+                }
+            }
+        },
+        "api.GetBotAccessTokenResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "description": "访问令牌",
+                    "type": "string",
+                    "example": "syt_xxx"
+                }
+            }
+        },
+        "api.GetRoomInfoResponse": {
+            "type": "object",
+            "properties": {
+                "room_info": {
+                    "description": "房间信息",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/api.RoomInfo"
+                        }
+                    ]
+                }
+            }
+        },
+        "api.GetRoomMembersResponse": {
+            "type": "object",
+            "properties": {
+                "members": {
+                    "description": "成员列表",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.RoomMember"
+                    }
+                },
+                "next_batch": {
+                    "description": "如果有更多结果，返回分页token（可选）",
+                    "type": "string",
+                    "example": "token123"
+                },
+                "total": {
+                    "description": "总成员数",
+                    "type": "integer",
+                    "example": 50
+                }
+            }
+        },
+        "api.MessageContent": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "description": "文本内容",
+                    "type": "string",
+                    "example": "Hello world"
+                },
+                "file": {
+                    "description": "多媒体文件信息",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/api.MessageFile"
+                        }
+                    ]
+                },
+                "format": {
+                    "description": "格式（可选）",
+                    "type": "string",
+                    "example": "org.matrix.custom.html"
+                },
+                "formatted_body": {
+                    "description": "HTML格式内容（可选）",
+                    "type": "string",
+                    "example": "\u003cb\u003eHello\u003c/b\u003e world"
+                },
+                "mentions": {
+                    "description": "@用户列表",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "[\"@user:example.com\"]"
+                    ]
+                },
+                "msg_type": {
+                    "description": "消息类型：m.text, m.image, m.video, m.audio, m.file",
+                    "type": "string",
+                    "enum": [
+                        "m.text",
+                        "m.image",
+                        "m.video",
+                        "m.audio",
+                        "m.file"
+                    ],
+                    "example": "m.text"
+                },
+                "reply_to": {
+                    "description": "引用消息（可选）",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/api.ReplyTo"
+                        }
+                    ]
+                }
+            }
+        },
+        "api.MessageFile": {
+            "type": "object",
+            "properties": {
+                "height": {
+                    "description": "图片高度（像素，可选）",
+                    "type": "integer",
+                    "example": 600
+                },
+                "mimetype": {
+                    "description": "MIME类型",
+                    "type": "string",
+                    "example": "image/png"
+                },
+                "size": {
+                    "description": "文件大小（字节）",
+                    "type": "integer",
+                    "example": 1024
+                },
+                "thumbnail": {
+                    "description": "缩略图信息（可选）",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/api.ThumbnailFile"
+                        }
+                    ]
+                },
+                "url": {
+                    "description": "文件URL（mxc://格式）",
+                    "type": "string",
+                    "example": "mxc://example.com/abc123"
+                },
+                "width": {
+                    "description": "图片宽度（像素，可选）",
+                    "type": "integer",
+                    "example": 800
+                }
+            }
+        },
+        "api.RedactMessageRequest": {
+            "type": "object",
+            "properties": {
+                "event_id": {
+                    "description": "要删除的 event ID",
+                    "type": "string",
+                    "example": "$abc123"
+                },
+                "reason": {
+                    "description": "删除原因（可选）",
+                    "type": "string",
+                    "example": "Spam message"
+                }
+            }
+        },
+        "api.RedactMessageResponse": {
+            "type": "object",
+            "properties": {
+                "event_id": {
+                    "description": "redaction 事件 ID",
+                    "type": "string",
+                    "example": "$redact123"
+                },
+                "room_id": {
+                    "description": "房间 ID",
+                    "type": "string",
+                    "example": "!room123:example.com"
+                }
+            }
+        },
+        "api.ReplyTo": {
+            "type": "object",
+            "properties": {
+                "event_id": {
+                    "description": "被引用的消息事件ID",
+                    "type": "string",
+                    "example": "$abc123"
+                }
+            }
+        },
+        "api.Room": {
+            "type": "object",
+            "properties": {
+                "aliases": {
+                    "description": "房间别名列表",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "[\"#room:example.com\"]"
+                    ]
+                },
+                "id": {
+                    "description": "房间ID",
+                    "type": "string",
+                    "example": "!abc123:example.com"
+                }
+            }
+        },
+        "api.RoomEvent": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "事件内容（可选）",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "decryption_error": {
+                    "description": "解密错误信息（可选）",
+                    "type": "string",
+                    "example": ""
+                },
+                "event_id": {
+                    "description": "事件ID",
+                    "type": "string",
+                    "example": "$abc123"
+                },
+                "origin_server_ts": {
+                    "description": "服务器时间戳",
+                    "type": "integer",
+                    "example": 1234567890
+                },
+                "room_id": {
+                    "description": "房间ID",
+                    "type": "string",
+                    "example": "!room123:example.com"
+                },
+                "sender": {
+                    "description": "发送者用户ID",
+                    "type": "string",
+                    "example": "@user:example.com"
+                },
+                "type": {
+                    "description": "事件类型",
+                    "type": "string",
+                    "example": "m.room.message"
+                }
+            }
+        },
+        "api.RoomInfo": {
+            "type": "object",
+            "properties": {
+                "avatar_url": {
+                    "description": "房间头像URL（可选）",
+                    "type": "string",
+                    "example": "mxc://example.com/avatar"
+                },
+                "canonical_alias": {
+                    "description": "规范别名（可选）",
+                    "type": "string",
+                    "example": "#room:example.com"
+                },
+                "creation_time": {
+                    "description": "创建时间戳（毫秒）",
+                    "type": "integer",
+                    "example": 1234567890
+                },
+                "guest_access": {
+                    "description": "访客访问权限",
+                    "type": "string",
+                    "enum": [
+                        "can_join",
+                        "forbidden"
+                    ],
+                    "example": "can_join"
+                },
+                "join_rule": {
+                    "description": "加入规则",
+                    "type": "string",
+                    "enum": [
+                        "public",
+                        "invite",
+                        "knock",
+                        "private"
+                    ],
+                    "example": "public"
+                },
+                "joined_members_count": {
+                    "description": "已加入成员数量",
+                    "type": "integer",
+                    "example": 10
+                },
+                "name": {
+                    "description": "房间名称（可选）",
+                    "type": "string",
+                    "example": "My Room"
+                },
+                "room_id": {
+                    "description": "房间ID",
+                    "type": "string",
+                    "example": "!room123:example.com"
+                },
+                "topic": {
+                    "description": "房间主题（可选）",
+                    "type": "string",
+                    "example": "Room topic"
+                },
+                "world_readable": {
+                    "description": "是否世界可读",
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "api.RoomMember": {
+            "type": "object",
+            "properties": {
+                "avatar_url": {
+                    "description": "头像URL（可选）",
+                    "type": "string",
+                    "example": "mxc://example.com/avatar"
+                },
+                "display_name": {
+                    "description": "显示名称（可选）",
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "join_time": {
+                    "description": "加入时间戳（毫秒），仅 join 状态有效",
+                    "type": "integer",
+                    "example": 1234567890
+                },
+                "membership": {
+                    "description": "成员关系状态",
+                    "type": "string",
+                    "enum": [
+                        "join",
+                        "leave",
+                        "invite",
+                        "ban",
+                        "knock"
+                    ],
+                    "example": "join"
+                },
+                "user_id": {
+                    "description": "用户ID",
+                    "type": "string",
+                    "example": "@user:example.com"
+                }
+            }
+        },
+        "api.SendMessageRequest": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "消息内容",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/api.MessageContent"
+                        }
+                    ]
+                }
+            }
+        },
+        "api.SendMessageResponse": {
+            "type": "object",
+            "properties": {
+                "event_id": {
+                    "description": "发送后生成的事件ID",
+                    "type": "string",
+                    "example": "$abc123"
+                }
+            }
+        },
+        "api.SyncMessageResponse": {
+            "type": "object",
+            "properties": {
+                "events": {
+                    "description": "房间事件列表",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/api.RoomEvent"
+                    }
+                }
+            }
+        },
+        "api.ThumbnailFile": {
+            "type": "object",
+            "properties": {
+                "height": {
+                    "description": "缩略图高度（像素，可选）",
+                    "type": "integer",
+                    "example": 150
+                },
+                "mimetype": {
+                    "description": "MIME类型",
+                    "type": "string",
+                    "example": "image/jpeg"
+                },
+                "size": {
+                    "description": "文件大小（字节）",
+                    "type": "integer",
+                    "example": 512
+                },
+                "url": {
+                    "description": "缩略图URL（mxc://格式），为空会尝试根据宽高生成缩略图",
+                    "type": "string",
+                    "example": "mxc://example.com/thumb123"
+                },
+                "width": {
+                    "description": "缩略图宽度（像素，可选）",
+                    "type": "integer",
+                    "example": 200
+                }
+            }
+        },
+        "api.UpdateBotRequest": {
+            "type": "object",
+            "properties": {
+                "avatar_url": {
+                    "description": "头像URL（可选）",
+                    "type": "string"
+                },
+                "config": {
+                    "description": "配置信息(JSON对象)",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/api.BotSettings"
+                        }
+                    ]
+                },
+                "description": {
+                    "description": "描述（可选）",
+                    "type": "string"
+                },
+                "display_name": {
+                    "description": "显示名称（可选）",
+                    "type": "string"
+                },
+                "event_types": {
+                    "description": "事件类型列表（可选）",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "webhook_url": {
+                    "description": "Webhook URL（可选）",
+                    "type": "string"
+                }
+            }
+        },
+        "api.UpdateBotResponse": {
+            "type": "object",
+            "properties": {
+                "account_type": {
+                    "description": "账户类型",
+                    "type": "integer",
+                    "example": 1
+                },
+                "config": {
+                    "description": "机器人配置",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/api.BotConfig"
+                        }
+                    ]
+                },
+                "localpart": {
+                    "description": "机器人本地部分（用户名）",
+                    "type": "string",
+                    "example": "bot1"
+                },
+                "server_name": {
+                    "description": "服务器名称",
+                    "type": "string",
+                    "example": "example.com"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BasicAuth": {
+            "type": "basic"
+        },
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "Header"
+        }
+    }
+}
