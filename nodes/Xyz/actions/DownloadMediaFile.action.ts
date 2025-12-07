@@ -40,9 +40,9 @@ export class DownloadMediaFileAction implements XyzAction {
 			headers: {
 				Authorization: `Bearer ${accessToken}`,
 			},
-			encoding: null,
+			encoding: 'blob',
 			returnFullResponse: true,
-		} as any);
+		})
 
 		// Get content type from response headers (handle different header formats)
 		const headers = response.headers || {};

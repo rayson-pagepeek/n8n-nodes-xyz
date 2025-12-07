@@ -10,7 +10,6 @@ export const PARAMS: ParamRegistry = {
 		name: 'roomId',
 		type: 'string',
 		default: '',
-		description: 'The room ID',
 	} as ParamDefinition,
 
 	event_id: {
@@ -18,7 +17,6 @@ export const PARAMS: ParamRegistry = {
 		name: 'eventId',
 		type: 'string',
 		default: '',
-		description: 'The event ID',
 	} as ParamDefinition,
 
 	body: {

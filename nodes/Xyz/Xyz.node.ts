@@ -2,46 +2,46 @@ import {
 	IExecuteFunctions,
 	INodeExecutionData,
 	INodeProperties,
+	INodePropertyOptions,
 	INodeType,
 	INodeTypeDescription,
-	NodeOperationError,
+	NodeOperationError
 } from 'n8n-workflow';
 import './actions'; // 确保 Action 被注册
 import { getParams } from './params';
+import type { ParamRegistry } from './params/types';
 import { actionRegistry } from './registry';
 
 export class Xyz implements INodeType {
-	get description(): INodeTypeDescription {
-		return {
-			displayName: 'XYZ',
-			name: 'xyz',
-			icon: 'file:icon.svg',
-			group: ['transform'],
-			version: 1,
-			description: 'XYZ chatbot integration (actions)',
-			defaults: {
-				name: 'XYZ',
+	description: INodeTypeDescription = {
+		displayName: 'XYZ',
+		name: 'xyz',
+		icon: 'file:icon.svg',
+		group: ['transform'],
+		version: 1,
+		description: 'XYZ chatbot integration (actions)',
+		defaults: {
+			name: 'XYZ',
+		},
+		inputs: ['main'],
+		outputs: ['main'],
+		credentials: [
+			{
+				name: 'chatbotApi',
+				required: true,
 			},
-			inputs: ['main'],
-			outputs: ['main'],
-			credentials: [
-				{
-					name: 'chatbotApi',
-					required: true,
-				},
-			],
-			usableAsTool: {
-				replacements: {
-					displayName: 'XYZ',
-					name: 'xyz',
-					icon: 'file:icon.svg',
-				},
+		],
+		usableAsTool: {
+			replacements: {
+				displayName: 'XYZ',
+				name: 'xyz',
+				icon: 'file:icon.svg',
 			},
-			properties: [
-				this.generateOperationProperty(),
-				...this.generateParameterProperties(),
-			],
-		};
+		},
+		properties: [
+			this.generateOperationProperty(),
+			...this.generateParameterProperties(),
+		],
 	}
 
 	/**
@@ -50,7 +50,7 @@ export class Xyz implements INodeType {
 	 */
 	private generateOperationProperty(): INodeProperties {
 		const resources = actionRegistry.getResources();
-		const options: any[] = [];
+		const options: INodePropertyOptions[] = [];
 
 		for (const resource of resources) {
 			const actions = actionRegistry.getByResource(resource);
@@ -58,17 +58,14 @@ export class Xyz implements INodeType {
 				continue;
 			}
 
-			const resourceOptions = actions.map((action) => ({
-				name: action.displayName || action.name,
-				action: action.description || '',
-				value: action.name,
-				description: action.description || '',
-			}));
-
-			options.push({
-				name: resource,
-				options: resourceOptions,
-			});
+			actions.forEach((action) => (
+				options.push({
+					name: action.displayName || action.name,
+					action: action.description || '',
+					value: action.name,
+					description: action.description || '',
+				})
+			));
 		}
 
 		// 获取默认操作（第一个注册的 Action）
@@ -80,7 +77,7 @@ export class Xyz implements INodeType {
 			name: 'operation',
 			type: 'options',
 			noDataExpression: true,
-			options,
+			options: options,
 			default: defaultOperation,
 		};
 	}
@@ -97,7 +94,7 @@ export class Xyz implements INodeType {
 
 		for (const action of actionRegistry.getAll()) {
 			const requiredParamsSet = new Set(action.requiredParams || []);
-			
+
 			for (const paramName of action.params) {
 				// 记录参数使用情况
 				if (!paramUsage.has(paramName)) {
@@ -121,7 +118,7 @@ export class Xyz implements INodeType {
 
 		for (const [paramName, actionNames] of paramUsage.entries()) {
 			// 获取参数定义
-			const paramDef = getParams([paramName as any])[0];
+			const paramDef = getParams([paramName as keyof ParamRegistry])[0];
 
 			// 如果 property name 已处理过，跳过
 			if (processedPropertyNames.has(paramDef.name)) {
