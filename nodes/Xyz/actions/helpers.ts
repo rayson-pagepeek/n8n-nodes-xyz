@@ -28,8 +28,8 @@ export function getNodeParameterWithOptional(
 	paramName: string,
 	itemIndex: number,
 	isRequired: boolean,
-	fallback?: any,
-): any {
+	fallback?: string,
+): string {
 	const actualParamName = getParamName(paramName, isRequired);
 	
 	// 尝试获取参数
@@ -39,7 +39,7 @@ export function getNodeParameterWithOptional(
 		if ((value === undefined || value === '') && fallback !== undefined) {
 			return fallback;
 		}
-		return value;
+		return value as string;
 	} catch (error) {
 		// 如果参数不存在且提供了 fallback，返回 fallback
 		if (fallback !== undefined) {

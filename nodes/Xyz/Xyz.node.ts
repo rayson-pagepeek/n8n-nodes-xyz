@@ -124,7 +124,7 @@ export class Xyz implements INodeType {
 		// 生成属性列表
 		const properties: INodeProperties[] = [];
 
-		for (const [paramName, actionNames] of paramUsage.entries()) {
+		for (const [paramName] of paramUsage.entries()) {
 			// 获取参数定义
 			const paramDef = getParams([paramName as keyof ParamRegistry])[0];
 			const requiredActions = paramRequired.get(paramName) || new Set();
