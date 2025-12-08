@@ -55,7 +55,7 @@ export class SendTextMessageAction implements XyzAction {
 		// Make request
 		const responseData = await ctx.helpers.httpRequest({
 			method: 'POST',
-			url: `${host}/chatbot/v1/send/${roomId}`,
+			url: `${host}/chatbot/v1/messages/${roomId}`,
 			headers: {
 				Authorization: `Bearer ${accessToken}`,
 				'Content-Type': 'application/json',
