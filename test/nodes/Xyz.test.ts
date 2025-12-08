@@ -135,7 +135,7 @@ describe('Xyz Node', () => {
 
 		expect(mockExecuteFunctions.helpers?.httpRequest).toHaveBeenCalledWith({
 			method: 'POST',
-			url: 'https://example.com/chatbot/v1/send/test-room-id',
+			url: 'https://example.com/chatbot/v1/messages/test-room-id',
 			headers: {
 				Authorization: 'Bearer test-token',
 				'Content-Type': 'application/json',
