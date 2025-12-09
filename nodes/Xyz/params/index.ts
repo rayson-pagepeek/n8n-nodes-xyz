@@ -66,6 +66,71 @@ export const PARAMS: ParamRegistry = {
 		default: 'data',
 		description: 'The binary property name',
 	} as ParamDefinition,
+
+	bot: {
+		displayName: 'Bot Name',
+		name: 'bot',
+		type: 'string',
+		default: '',
+	} as ParamDefinition,
+
+	room_name: {
+		displayName: 'Room Name or ID',
+		name: 'roomName',
+		type: 'string',
+		default: '',
+		description: 'The room name or ID (e.g., !room123:example.com)',
+	} as ParamDefinition,
+
+	reason: {
+		displayName: 'Reason',
+		name: 'reason',
+		type: 'string',
+		default: '',
+		description: 'The reason for deletion (optional)',
+	} as ParamDefinition,
+
+	membership: {
+		displayName: 'Membership',
+		name: 'membership',
+		type: 'options',
+		options: [
+			{ name: 'Ban', value: 'ban' },
+			{ name: 'Invite', value: 'invite' },
+			{ name: 'Join', value: 'join' },
+			{ name: 'Knock', value: 'knock' },
+			{ name: 'Leave', value: 'leave' },
+		],
+		default: 'join',
+		description: 'Filter by membership status',
+	} as ParamDefinition,
+
+	limit: {
+		displayName: 'Limit',
+		name: 'limit',
+		type: 'number',
+		typeOptions: {
+			minValue: 1,
+		},
+		default: 50,
+		description: 'Max number of results to return',
+	} as ParamDefinition,
+
+	since: {
+		displayName: 'Since',
+		name: 'since',
+		type: 'string',
+		default: '',
+		description: 'Pagination token',
+	} as ParamDefinition,
+
+	event_ids: {
+		displayName: 'Event IDs',
+		name: 'eventIds',
+		type: 'string',
+		default: '',
+		description: 'Comma-separated list of event IDs to filter',
+	} as ParamDefinition,
 };
 
 /**

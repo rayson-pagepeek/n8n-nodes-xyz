@@ -1,12 +1,12 @@
 import type { IExecuteFunctions, INodeExecutionData } from 'n8n-workflow';
 import type { XyzAction } from './types';
 
-export class ReadMessageAction implements XyzAction {
-	name = 'readMessage';
-	resource = 'Message Actions';
-	displayName = 'Read Message';
-	description = 'Read messages from the chatbot API';
-	params = ['room_id', 'event_id', 'event_ids', 'limit'] as const;
+export class GetRoomMembersAction implements XyzAction {
+	name = 'getRoomMembers';
+	resource = 'Room Actions';
+	displayName = 'Get Room Members';
+	description = 'Get the list of members in a room';
+	params = ['room_id', 'membership', 'limit', 'since'] as const;
 	requiredParams = ['room_id'] as const;
 
 	async execute(
@@ -18,24 +18,21 @@ export class ReadMessageAction implements XyzAction {
 		accessToken: string,
 	): Promise<void> {
 		const roomId = ctx.getNodeParameter('roomId', itemIndex) as string;
-		const eventId = ctx.getNodeParameter('eventId', itemIndex) as string;
-		const eventIdsStr = ctx.getNodeParameter('eventIds', itemIndex) as string;
+		const membership = ctx.getNodeParameter('membership', itemIndex) as string;
 		const limit = ctx.getNodeParameter('limit', itemIndex) as number;
+		const since = ctx.getNodeParameter('since', itemIndex) as string;
 
 		// Build URL
-		let url = `${host}/chatbot/v1/messages/${roomId}`;
+		let url = `${host}/chatbot/v1/rooms/${roomId}/members`;
 		const queryParams: string[] = [];
-		if (eventId) {
-			queryParams.push(`event_id=${encodeURIComponent(eventId)}`);
-		}
-		if (eventIdsStr) {
-			const eventIds = eventIdsStr.split(',').map((id) => id.trim()).filter((id) => id.length > 0);
-			if (eventIds.length > 0) {
-				queryParams.push(`event_ids=${eventIds.map((id) => encodeURIComponent(id)).join(',')}`);
-			}
+		if (membership) {
+			queryParams.push(`membership=${encodeURIComponent(membership)}`);
 		}
 		if (limit) {
 			queryParams.push(`limit=${limit}`);
+		}
+		if (since) {
+			queryParams.push(`since=${encodeURIComponent(since)}`);
 		}
 		if (queryParams.length > 0) {
 			url += `?${queryParams.join('&')}`;
@@ -50,11 +47,14 @@ export class ReadMessageAction implements XyzAction {
 			},
 		});
 
+		// 合并输入数据和响应数据
+		const inputData = items[itemIndex].json || {};
 		returnData.push({
-			json: responseData,
+			json: {
+				...inputData,
+				response: responseData,
+			},
 			pairedItem: { item: itemIndex },
 		});
 	}
 }
-
-
