@@ -4,6 +4,7 @@ export interface BotEvent extends MessageEvent, IDataObject {
 	bot_name: string;
 	access_token: string;
 	response_mode: string;
+	history: HistoryMessage[];
 }
 
 export interface MessageEvent {
@@ -15,6 +16,17 @@ export interface MessageEvent {
 	content?: MessageContent;
 	membership?: string;
 	state_key?: string;
+}
+
+export interface HistoryMessage {
+	role: 'user' | 'assistant';          // 角色：user或assistant
+	sender: string;                      // 发送者user_id
+	content: string;                     // 消息内容
+	eventId: string;                     // 事件ID
+	createdAt: number;                   // 创建时间（时间戳, 单位秒或毫秒，需根据系统定义）
+	files?: MessageFile[];               // 多媒体文件列表（可选）
+	replyTo?: ReplyTo;                   // 引用消息（可选）
+	mentions?: string[];                 // @用户列表（可选）
 }
 
 export interface MessageContent {

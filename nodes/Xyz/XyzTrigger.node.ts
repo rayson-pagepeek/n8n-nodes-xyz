@@ -5,7 +5,7 @@ import {
 	IWebhookResponseData,
 	NodeOperationError,
 } from 'n8n-workflow';
-import type { BotEvent } from '../types';
+import type { BotEvent, HistoryMessage } from '../types';
 
 
 export class XyzTrigger implements INodeType {
@@ -91,10 +91,35 @@ export class XyzTrigger implements INodeType {
 		// 检查message中是否包含botName,如果包含,则将botName替换为空字符串
 		const botName = bodyData.bot_name;
 		const chatInput = message.replace(`${botName}:`, '');
-		
+		const histories: HistoryMessage[] = [
+			{
+				role: 'user',
+				content: chatInput,
+				eventId: bodyData.event_id,
+				createdAt: bodyData.origin_server_ts,
+				sender: bodyData.sender,
+				replyTo: bodyData.content?.reply_to,
+				mentions: bodyData.content?.mentions,
+			},
+		];
+		if (bodyData.history.length > 0) {
+			bodyData.history.forEach((history: HistoryMessage) => {
+				histories.push({
+					role: history.role,
+					content: history.content,
+					eventId: history.eventId,
+					createdAt: history.createdAt,
+					sender: history.sender,
+					replyTo: history.replyTo,
+					mentions: history.mentions,
+				});
+			});
+		}
+
 		const returnData = this.helpers.returnJsonArray({
-			chatInput,
 			...bodyData,
+			chatInput,
+			chat_context: histories,
 		});
 
 		if (bodyData.response_mode === 'sse') {
